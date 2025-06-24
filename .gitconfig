@@ -1,0 +1,24 @@
+[init]
+defaultBranch = main
+
+[user]
+name = lauren-gregg
+
+email = lgregg@mountain.com
+
+[alias]
+logdog = log --decorate --oneline --graph
+cf = cat-file -p
+st = status
+cm = commit
+ch = checkout
+br = branch
+
+[push]
+autoSetupRemote = true
+
+[core]
+excludesfile = /Users/lgregg3/.gitignore_global
+
+
+
