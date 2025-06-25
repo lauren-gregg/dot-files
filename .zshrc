@@ -21,6 +21,10 @@ alias c='clear'
 alias gpum="git checkout main; git pull upstream main;"
 alias venv="python3.12 -m venv .venv; source .venv/bin/activate;"
 
+alias aws-int="okta-awscli -v --profile integration --okta-profile integration; export AWS_PROFILE=integration;"
+alias aws-core="okta-awscli -v --profile core --okta-profile core; export AWS_PROFILE=core;"
+alias aws-set=". ~/cli_auth.sh;"
+alias aws-check="aws sts get-caller-identity;"
 
 # Git branch
 parse_git_branch() {
@@ -77,3 +81,10 @@ setopt prompt_subst
 # Define prompt using the dynamic vars
 # export PS1="%{$fg[cyan]%}%n@%m%{$reset_color%} %{$fg[magenta]%}%~%{$reset_color%} ${GIT_STATUS_ICON}${GIT_BRANCH}%{$fg[magenta]%}%$%{$reset_color%} $ "
 export PS1='%{$fg[cyan]%}%n@%m%{$reset_color%} %{$fg[magenta]%}%~%{$reset_color%} $(git_status_emoji)$(parse_git_branch) %{$fg[magenta]%}$ %{$reset_color%}'
+
+## setup PATH
+export PATH="$HOME/Library/Python/3.9/bin:$PATH"
+export PATH="$HOME/Library/Python/3.12/bin:$PATH"
+export PATH="$HOME/Library/Python/3.13/bin:$PATH"
+
+echo "🚀"
