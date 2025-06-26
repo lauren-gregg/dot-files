@@ -26,6 +26,12 @@ alias aws-core="okta-awscli -v --profile core --okta-profile core; export AWS_PR
 alias aws-set=". ~/cli_auth.sh;"
 alias aws-check="aws sts get-caller-identity;"
 
+alias kube-check="kubectl config current-context"
+alias kube-prod1="export KUBECONFIG=~/.kube/reporting-prod-1; kubectl config current-context"
+alias kube-prod2="export KUBECONFIG=~/.kube/reporting-prod-2; kubectl config current-context"
+alias kube-dev2="export KUBECONFIG=~/.kube/reporting-dev-2-eks; kubectl config current-context"
+
+
 # Git branch
 parse_git_branch() {
     git branch 2>/dev/null | sed -n 's/^\* \(.*\)/[\1]/p'
