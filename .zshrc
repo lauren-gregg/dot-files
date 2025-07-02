@@ -20,6 +20,8 @@ alias alert='notify-send --urgency=low -i "$([[ $? = 0 ]] && echo terminal || ec
 alias c='clear'
 alias gpum="git checkout main; git pull upstream main;"
 alias venv="python3.12 -m venv .venv; source .venv/bin/activate;"
+alias dc="docker-compose"
+alias d="docker"
 
 alias aws-int="okta-awscli -v --profile integration --okta-profile integration; export AWS_PROFILE=integration;"
 alias aws-core="okta-awscli -v --profile core --okta-profile core; export AWS_PROFILE=core;"
