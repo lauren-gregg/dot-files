@@ -90,7 +90,8 @@ export PS1='%{$fg[cyan]%}%n@%m%{$reset_color%} %{$fg[magenta]%}%~%{$reset_color%
 
 ## setup PATH
 export PATH="$HOME/Library/Python/3.9/bin:$PATH"
+export PATH="$HOME/Library/Python/3.11/bin:$PATH"
 export PATH="$HOME/Library/Python/3.12/bin:$PATH"
 export PATH="$HOME/Library/Python/3.13/bin:$PATH"
 
-echo "🚀"
+
