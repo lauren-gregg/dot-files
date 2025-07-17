@@ -32,7 +32,16 @@ alias kube-check="kubectl config current-context"
 alias kube-prod1="export KUBECONFIG=~/.kube/reporting-prod-1; kubectl config current-context"
 alias kube-prod2="export KUBECONFIG=~/.kube/reporting-prod-2; kubectl config current-context"
 alias kube-dev2="export KUBECONFIG=~/.kube/reporting-dev-2-eks; kubectl config current-context"
+alias k="kubectl"
+alias k-spaces="kubectl get namespaces"
+alias k-pods="kubectl get pods -n" #need namespace name
 
+k-pods-by-node() {
+  for node in $(kubectl get nodes -o name | cut -d/ -f2); do
+    echo -e "\n### Pods on node: $node ###"
+    kubectl get pods --all-namespaces --field-selector spec.nodeName=$node
+  done
+}
 
 # Git branch
 parse_git_branch() {
