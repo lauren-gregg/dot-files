@@ -35,13 +35,13 @@ alias kube-dev2="export KUBECONFIG=~/.kube/reporting-dev-2-eks; kubectl config c
 alias k="kubectl"
 alias k-spaces="kubectl get namespaces"
 alias k-pods="kubectl get pods -n" #need namespace name
-
 k-pods-by-node() {
   for node in $(kubectl get nodes -o name | cut -d/ -f2); do
     echo -e "\n### Pods on node: $node ###"
     kubectl get pods --all-namespaces --field-selector spec.nodeName=$node
   done
 }
+alias k-pn="k-pods-by-node"
 
 # Git branch
 parse_git_branch() {
