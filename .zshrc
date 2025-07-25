@@ -28,20 +28,105 @@ alias aws-core="okta-awscli -v --profile core --okta-profile core; export AWS_PR
 alias aws-set=". ~/cli_auth.sh;"
 alias aws-check="aws sts get-caller-identity;"
 
-alias kube-check="kubectl config current-context"
-alias kube-prod1="export KUBECONFIG=~/.kube/reporting-prod-1; kubectl config current-context"
-alias kube-prod2="export KUBECONFIG=~/.kube/reporting-prod-2; kubectl config current-context"
-alias kube-dev2="export KUBECONFIG=~/.kube/reporting-dev-2-eks; kubectl config current-context"
-alias k="kubectl"
-alias k-spaces="kubectl get namespaces"
-alias k-pods="kubectl get pods -n" #need namespace name
-k-pods-by-node() {
-  for node in $(kubectl get nodes -o name | cut -d/ -f2); do
-    echo -e "\n### Pods on node: $node ###"
-    kubectl get pods --all-namespaces --field-selector spec.nodeName=$node
-  done
+
+# Kubernetes aliases converted to functions with prod guard
+function kube() { kube_prod_guard "$@" && command kubectl $(echo "$@" | sed 's/ -p//g'); }
+function kube-check() { kube_prod_guard "$@" && command kubectl config current-context; }
+function kube-prod1() { export KUBECONFIG=~/.kube/reporting-prod-1; kube_prod_guard "$@" && command kubectl config current-context; }
+function kube-prod2() { export KUBECONFIG=~/.kube/reporting-prod-2; kube_prod_guard "$@" && command kubectl config current-context; }
+function kube-dev2() { export KUBECONFIG=~/.kube/reporting-dev-2-eks; kube_prod_guard "$@" && command kubectl config current-context; }
+function kube-spaces() { kube_prod_guard "$@" && command kubectl get namespaces; }
+function kube-pods() { kube_prod_guard "$@" && command kubectl get pods -n $(echo "$@" | sed 's/ -p//g'); }
+function kube-pods-by-node() {
+    kube_prod_guard "$@" &&
+    for node in $(command kubectl get nodes -o name | cut -d/ -f2); do
+        echo -e "\n### Pods on node: $node ###"
+        command kubectl get pods --all-namespaces --field-selector spec.nodeName=$node
+    done
 }
-alias k-pn="k-pods-by-node"
+
+
+# alias's
+alias k="kube"
+alias k-check="kube-check"
+alias k-prod1="kube-prod1"
+alias k-prod2="kube-prod2"
+alias k-dev2="kube-dev2"
+alias k-spaces="kube-spaces"
+alias k-pods="kube-pods"
+alias k-pn="kube-pods-by-node"
+
+# Shared guard and display
+function kube_prod_guard() {
+  local bypass_prompt="false"
+  local context
+  
+  # Check for -p flag in arguments
+  for arg in "$@"; do
+    if [[ "$arg" == "-p" ]]; then
+      bypass_prompt="true"
+      break
+    fi
+  done
+  
+  context="$(command kubectl config current-context 2>/dev/null || echo "unknown")"
+  echo -e "\033[1;34m[Context: $context]\033[0m"
+
+  if [[ "$context" =~ [Pp][Rr][Oo][Dd] ]]; then
+    echo -e "\033[1;31mWARNING: You are connected to a PROD Kubernetes context: $context\033[0m"
+    
+    if [[ "$bypass_prompt" == "true" ]]; then
+      echo "Bypassing confirmation due to -p flag"
+    else
+      echo -n "Are you sure you want to continue? (y/N): "
+      read confirm
+      if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+        echo "Aborted."
+        return 1
+      fi
+    fi
+  fi
+  return 0
+}
+
+# Wrap kube commands
+function kubectl()   { kube_prod_guard "$@" && command kubectl $(echo "$@" | sed 's/ -p//g'); }
+function kubectx()   { kube_prod_guard "$@" && command kubectx $(echo "$@" | sed 's/ -p//g'); }
+function kubens()    { kube_prod_guard "$@" && command kubens $(echo "$@" | sed 's/ -p//g'); }
+function k9s()       { kube_prod_guard "$@" && command k9s $(echo "$@" | sed 's/ -p//g'); }
+function helm()      { kube_prod_guard "$@" && command helm $(echo "$@" | sed 's/ -p//g'); }
+function skaffold()   { kube_prod_guard "$@" && command skaffold $(echo "$@" | sed 's/ -p//g'); }
+function flux()       { kube_prod_guard "$@" && command flux $(echo "$@" | sed 's/ -p//g'); }
+function argo()       { kube_prod_guard "$@" && command argo $(echo "$@" | sed 's/ -p//g'); }
+function istioctl()   { kube_prod_guard "$@" && command istioctl $(echo "$@" | sed 's/ -p//g'); }
+function kustomize()  { kube_prod_guard "$@" && command kustomize $(echo "$@" | sed 's/ -p//g'); }
+function velero()     { kube_prod_guard "$@" && command velero $(echo "$@" | sed 's/ -p//g'); }
+function telepresence() { kube_prod_guard "$@" && command telepresence $(echo "$@" | sed 's/ -p//g'); }
+function stern()      { kube_prod_guard "$@" && command stern $(echo "$@" | sed 's/ -p//g'); }
+function kubeseal()   { kube_prod_guard "$@" && command kubeseal $(echo "$@" | sed 's/ -p//g'); }
+
+
+
+# Function to show kubernetes shortcuts (like alias but for functions)
+function k-help() {
+    echo "=== Kubernetes Functions & Shortcuts ==="
+    echo "k                  - kubectl with prod guard"
+    echo "k-spaces           - kubectl get namespaces"
+    echo "k-pods NAMESPACE   - kubectl get pods -n NAMESPACE"
+    echo "k-pods-by-node     - show pods grouped by node"
+    echo "kube-check         - show current context"
+    echo "kube-prod1         - switch to prod-1 context"
+    echo "kube-prod2         - switch to prod-2 context"  
+    echo "kube-dev2          - switch to dev-2 context"
+    echo ""
+    echo "Add -p flag to bypass prod confirmation:"
+    echo "Example: k-spaces -p, kube-check -p, kubectl get pods -p"
+    echo ""
+    echo "Other protected commands:"
+    echo "kubectl, kubectx, kubens, k9s, helm, flux, argo,"
+    echo "istioctl, kustomize, velero, telepresence, stern, kubeseal"
+}
+
 
 # Git branch
 parse_git_branch() {
