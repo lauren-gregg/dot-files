@@ -46,6 +46,16 @@ function kube-pods-by-node() {
     done
 }
 
+function authenticate-gcloud-dev() {
+    gcloud auth login;
+    gcloud config set project mntn-prj-dev-00;
+    gcloud container clusters get-credentials mntn-dev-1-central1 --region us-central1 --project mntn-prj-dev-00;
+}
+
+
+
+
+
 
 # alias's
 alias k="kube"
@@ -57,6 +67,8 @@ alias k-gdev="kube-gdev"
 alias k-spaces="kube-spaces"
 alias k-pods="kube-pods"
 alias k-pn="kube-pods-by-node"
+alias k-gdev-auth="authenticate-gcloud-dev"
+
 
 # Shared guard and display
 function kube_prod_guard() {
