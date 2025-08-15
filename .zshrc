@@ -36,6 +36,7 @@ function kube-prod1() { export KUBECONFIG=~/.kube/reporting-prod-1; kube_prod_gu
 function kube-prod2() { export KUBECONFIG=~/.kube/reporting-prod-2; kube_prod_guard "$@" && command kubectl config current-context; }
 function kube-dev2() { export KUBECONFIG=~/.kube/reporting-dev-2-eks; kube_prod_guard "$@" && command kubectl config current-context; }
 function kube-gdev() { export KUBECONFIG=~/.kube/google-dev; kube_prod_guard "$@" && command kubectl config current-context; }
+function kube-gprod() { export KUBECONFIG=~/.kube/google-prod; kube_prod_guard "$@" && command kubectl config current-context; }
 function kube-spaces() { kube_prod_guard "$@" && command kubectl get namespaces; }
 function kube-pods() { kube_prod_guard "$@" && command kubectl get pods -n $(echo "$@" | sed 's/ -p//g'); }
 function kube-pods-by-node() {
@@ -48,10 +49,16 @@ function kube-pods-by-node() {
 
 function authenticate-gcloud-dev() {
     gcloud auth login;
-    gcloud config set project mntn-prj-dev-00;
-    gcloud container clusters get-credentials mntn-dev-1-central1 --region us-central1 --project mntn-prj-dev-00;
+    gcloud config set project mntn-gke-dev-01;
+    gcloud container clusters get-credentials mntn-gke-dev-01 --region us-central1 --project mntn-gke-dev-01;
 }
 
+
+function authenticate-gcloud-prod() {
+    gcloud auth login;
+    gcloud config set project mntn-gke-prod-01;
+    gcloud container clusters get-credentials mntn-gke-prod-01 --region us-central1 --project mntn-gke-prod-01;
+}
 
 
 
@@ -64,6 +71,7 @@ alias k-prod1="kube-prod1"
 alias k-prod2="kube-prod2"
 alias k-dev2="kube-dev2"
 alias k-gdev="kube-gdev"
+alias k-gprod="kube-gprod"
 alias k-spaces="kube-spaces"
 alias k-pods="kube-pods"
 alias k-pn="kube-pods-by-node"
