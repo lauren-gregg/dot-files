@@ -28,6 +28,93 @@ alias aws-core="okta-awscli -v --profile core --okta-profile core; export AWS_PR
 alias aws-set=". ~/cli_auth.sh;"
 alias aws-check="aws sts get-caller-identity;"
 
+# spring boot aliases
+# Dynamic Spring Boot profile runner
+# Dynamic Spring Boot profile runner
+bootrun() {
+    # Check if we're in a Gradle Spring Boot project
+    if [ ! -f "./gradlew" ]; then
+        echo "Error: Not in a Gradle project directory"
+        return 1
+    fi
+    
+    # Get available profiles by listing files and extracting profile names
+    local available_profiles=()
+    
+    if [ -d "src/main/resources" ]; then
+        # Enable nullglob locally so patterns with no matches expand to nothing
+        setopt local_options nullglob
+        
+        # Process yml files
+        for file in src/main/resources/application-*.yml; do
+            if [ -f "$file" ]; then
+                # Extract profile name using parameter expansion
+                filename=$(basename "$file")
+                profile=${filename#application-}
+                profile=${profile%.yml}
+                available_profiles+=("$profile")
+            fi
+        done
+        
+        # Process yaml files
+        for file in src/main/resources/application-*.yaml; do
+            if [ -f "$file" ]; then
+                filename=$(basename "$file")
+                profile=${filename#application-}
+                profile=${profile%.yaml}
+                available_profiles+=("$profile")
+            fi
+        done
+        
+        # Process properties files
+        for file in src/main/resources/application-*.properties; do
+            if [ -f "$file" ]; then
+                filename=$(basename "$file")
+                profile=${filename#application-}
+                profile=${profile%.properties}
+                available_profiles+=("$profile")
+            fi
+        done
+    fi
+    
+    # Remove duplicates and sort
+    if [ ${#available_profiles[@]} -gt 0 ]; then
+        available_profiles=($(printf '%s\n' "${available_profiles[@]}" | sort -u))
+    fi
+    
+    if [ -z "$1" ]; then
+        echo "Usage: bootrun <profile>"
+        if [ ${#available_profiles[@]} -gt 0 ]; then
+            echo "Available profiles in this repo: ${available_profiles[*]}"
+        else
+            echo "No profile-specific configuration files found"
+        fi
+        return 1
+    fi
+    
+    local profile="$1"
+    
+    # Validate profile exists (if we found any profiles)
+    if [ ${#available_profiles[@]} -gt 0 ]; then
+        local valid=false
+        for p in "${available_profiles[@]}"; do
+            if [ "$p" = "$profile" ]; then
+                valid=true
+                break
+            fi
+        done
+        
+        if [ "$valid" = false ]; then
+            echo "Error: Invalid profile '$profile'"
+            echo "Available profiles in this repo: ${available_profiles[*]}"
+            return 1
+        fi
+    fi
+    
+    echo "🚀 Starting Spring Boot application with profile: $profile"
+    ./gradlew bootRun --args="--spring.profiles.active=$profile"
+}
+
 
 # Kubernetes aliases converted to functions with prod guard
 function kube() { kube_prod_guard "$@" && command kubectl $(echo "$@" | sed 's/ -p//g'); }
