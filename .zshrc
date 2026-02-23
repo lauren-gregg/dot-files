@@ -28,6 +28,9 @@ alias aws-core="okta-awscli -v --profile core --okta-profile core; export AWS_PR
 alias aws-set=". ~/cli_auth.sh;"
 alias aws-check="aws sts get-caller-identity;"
 
+alias lds-dev=" gcloud compute ssh --zone 'us-central1-c' 'lds-instance-20250717-190327' --tunnel-through-iap --project 'mntn-prj-dev-00'"
+alias lds-prod="gcloud compute ssh --zone 'us-central1-c' 'lds-prod-01' --tunnel-through-iap --project 'mntn-analytics-prod-01'"
+
 # spring boot aliases
 # Dynamic Spring Boot profile runner
 # Dynamic Spring Boot profile runner
@@ -151,7 +154,7 @@ function authenticate-gcloud-prod() {
 
 
 
-# alias's
+# kubernetes alias's
 alias k="kube"
 alias k-check="kube-check"
 alias k-prod1="kube-prod1"

@@ -19,6 +19,3 @@ autoSetupRemote = true
 
 [core]
 excludesfile = /Users/lgregg3/.gitignore_global
-
-
-
