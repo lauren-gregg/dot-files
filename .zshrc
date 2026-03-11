@@ -31,6 +31,9 @@ alias aws-check="aws sts get-caller-identity;"
 alias lds-dev=" gcloud compute ssh --zone 'us-central1-c' 'lds-instance-20250717-190327' --tunnel-through-iap --project 'mntn-prj-dev-00'"
 alias lds-prod="gcloud compute ssh --zone 'us-central1-c' 'lds-prod-01' --tunnel-through-iap --project 'mntn-analytics-prod-01'"
 
+alias gcloud-project="gcloud config get-value project"
+alias gcloud-switch-project='current_project=$(gcloud config get-value project 2>/dev/null); if [[ "$current_project" == "mntn-gke-prod-01" ]]; then gcloud config set project dw-main-silver && gcloud auth application-default login; elif [[ "$current_project" == "dw-main-silver" ]]; then gcloud config set project mntn-gke-prod-01 && gcloud auth application-default login; else echo "Current project: $current_project - switching to mntn-gke-prod-01"; gcloud config set project mntn-gke-prod-01 && gcloud auth application-default login; fi'
+
 # spring boot aliases
 # Dynamic Spring Boot profile runner
 # Dynamic Spring Boot profile runner
