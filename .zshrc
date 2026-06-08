@@ -205,7 +205,6 @@ function kube_prod_guard() {
 }
 
 # Wrap kube commands
-function kubectl()   { kube_prod_guard "$@" && command kubectl $(echo "$@" | sed 's/ -p//g'); }
 function kubectx()   { kube_prod_guard "$@" && command kubectx $(echo "$@" | sed 's/ -p//g'); }
 function kubens()    { kube_prod_guard "$@" && command kubens $(echo "$@" | sed 's/ -p//g'); }
 function k9s()       { kube_prod_guard "$@" && command k9s $(echo "$@" | sed 's/ -p//g'); }
@@ -238,7 +237,7 @@ function k-help() {
     echo "Example: k-spaces -p, kube-check -p, kubectl get pods -p"
     echo ""
     echo "Other protected commands:"
-    echo "kubectl, kubectx, kubens, k9s, helm, flux, argo,"
+    echo "kubectx, kubens, k9s, helm, flux, argo,"
     echo "istioctl, kustomize, velero, telepresence, stern, kubeseal"
 }
 
@@ -307,3 +306,4 @@ export PATH="$HOME/Library/Python/3.13/bin:$PATH"
 export PATH="$(gcloud info --format='value(installation.sdk_root)')/bin:$PATH"
 
 
+export PATH="$HOME/.local/bin:$PATH"
