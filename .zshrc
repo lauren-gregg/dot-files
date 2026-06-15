@@ -28,6 +28,9 @@ alias aws-core="okta-awscli -v --profile core --okta-profile core; export AWS_PR
 alias aws-set=". ~/cli_auth.sh;"
 alias aws-check="aws sts get-caller-identity;"
 
+alias vault-prod='export VAULT_ADDR="https://vault.prod.in.mountain.com"; vault login -method=oidc'
+alias vault-dev='export VAULT_ADDR="https://vault.nonprod.in.mountain.com"; vault login -method=oidc'
+
 alias lds-dev=" gcloud compute ssh --zone 'us-central1-c' 'lds-instance-20250717-190327' --tunnel-through-iap --project 'mntn-prj-dev-00'"
 alias lds-prod="gcloud compute ssh --zone 'us-central1-c' 'lds-prod-01' --tunnel-through-iap --project 'mntn-analytics-prod-01'"
 
